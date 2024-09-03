@@ -1415,16 +1415,16 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_10.addWidget(self.frame_3)
 
-        self.pushButton = QPushButton(self.lateral_menu)
-        self.pushButton.setObjectName(u"pushButton")
+        self.but_exit = QPushButton(self.lateral_menu)
+        self.but_exit.setObjectName(u"but_exit")
         font3 = QFont()
         font3.setPointSize(11)
         font3.setBold(True)
         font3.setStyleStrategy(QFont.PreferDefault)
-        self.pushButton.setFont(font3)
-        self.pushButton.setLayoutDirection(Qt.RightToLeft)
-        self.pushButton.setAutoFillBackground(False)
-        self.pushButton.setStyleSheet(u"\n"
+        self.but_exit.setFont(font3)
+        self.but_exit.setLayoutDirection(Qt.RightToLeft)
+        self.but_exit.setAutoFillBackground(False)
+        self.but_exit.setStyleSheet(u"\n"
 "QPushButton {\n"
 "    background-color: #ff4d4d;  /* \u041a\u0440\u0430\u0441\u043d\u044b\u0439 \u0446\u0432\u0435\u0442 */\n"
 "    padding: 10px 20px;         /* \u041e\u0442\u0441\u0442\u0443\u043f\u044b \u0432\u0441\u0442\u0440\u043e\u0435\u043d\u043d\u044b\u0445 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u043e\u0432 */\n"
@@ -1444,10 +1444,10 @@ class Ui_MainWindow(object):
 "}")
         icon7 = QIcon()
         icon7.addFile(u":/feather/arrow-right-circle.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.pushButton.setIcon(icon7)
-        self.pushButton.setIconSize(QSize(18, 18))
+        self.but_exit.setIcon(icon7)
+        self.but_exit.setIconSize(QSize(18, 18))
 
-        self.verticalLayout_10.addWidget(self.pushButton)
+        self.verticalLayout_10.addWidget(self.but_exit)
 
         self.verticalLayout_10.setStretch(0, 1)
         self.verticalLayout_10.setStretch(1, 5)
@@ -1928,7 +1928,7 @@ class Ui_MainWindow(object):
         self.but_guide.setText(QCoreApplication.translate("MainWindow", u"Guide", None))
         self.but_developer.setText(QCoreApplication.translate("MainWindow", u"Developer", None))
         self.but_technologies.setText(QCoreApplication.translate("MainWindow", u"Technologies", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u" EXIT", None))
+        self.but_exit.setText(QCoreApplication.translate("MainWindow", u" EXIT", None))
         self.label_title.setText(QCoreApplication.translate("MainWindow", u"toText", None))
         self.settings_process.setItemText(0, QCoreApplication.translate("MainWindow", u"Settings from image", None))
         self.settings_process.setItemText(1, QCoreApplication.translate("MainWindow", u"Settingd from sound", None))

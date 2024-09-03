@@ -1495,7 +1495,7 @@ border-radius: 5px;
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="but_exit">
            <property name="font">
             <font>
              <pointsize>11</pointsize>
