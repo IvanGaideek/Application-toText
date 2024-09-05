@@ -3,7 +3,7 @@ import os
 from PySide6 import QtCore
 from PySide6.QtGui import QPixmap, Qt
 from PySide6.QtWidgets import QMainWindow, QFileDialog
-from auxiliary_funcs import check_file_extension, wrap_text
+from auxiliary_funcs import check_file_extension, wrap_text, read_file
 from ui_index import Ui_MainWindow
 
 dir_for_info = "docs/"
@@ -52,8 +52,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             name_file += "ru.txt"
         else:
             name_file += "en.txt"
-        with open(dir_for_info + name_file, "r", encoding="utf-8") as file:
-            plain_text_edit.setPlainText(file.read())  # read the file
+        full_name_file = dir_for_info + name_file
+        read_file(plain_text_edit, full_name_file)
+        # Reaction to radio buttons
+        radio_but_ru.clicked.connect(lambda: read_file(plain_text_edit, dir_for_info + prefix_name_fie + "ru.txt"))
+        radio_but_en.clicked.connect(lambda: read_file(plain_text_edit, dir_for_info + prefix_name_fie + "en.txt"))
 
     @QtCore.Slot()
     def load_file(self):

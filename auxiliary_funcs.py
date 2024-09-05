@@ -8,6 +8,11 @@ def check_file_extension(filename, valid_extensions):
     return any(filename.lower().endswith(ext) for ext in valid_extensions)
 
 
+def read_file(plain_text_edit, full_name_file):
+    with open(full_name_file, "r", encoding="utf-8") as file:
+        plain_text_edit.setPlainText(file.read())  # write to the widget
+
+
 def wrap_text(your_label: QLabel):
     text = your_label.text()
     max_message_width = your_label.width()
