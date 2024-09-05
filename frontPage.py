@@ -3,7 +3,7 @@ import os
 from PySide6 import QtCore
 from PySide6.QtGui import QPixmap, Qt
 from PySide6.QtWidgets import QMainWindow, QFileDialog
-from auxiliary_funcs import check_file_extension
+from auxiliary_funcs import check_file_extension, wrap_text
 from ui_index import Ui_MainWindow
 
 dir_for_info = "docs/"
@@ -83,10 +83,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.label_image.setPixmap(scaled)
 
     def load_sound(self, path):
-        pass
+        self.label_select_audio_file.setText(path.split("/")[-1])  # change the text (name file) in the label
+        wrap_text(self.label_select_audio_file)
 
     def load_pdf(self, path):
-        pass
+        self.label_select_pdf_file.setText(path.split("/")[-1])  # change the text (name file) in the label
+        wrap_text(self.label_select_pdf_file)
 
     def switch_to_rimage_page(self):
         self.stackedWidget.setCurrentIndex(0)
