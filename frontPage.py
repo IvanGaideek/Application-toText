@@ -45,6 +45,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                    1: ("*.mp3 *.wav", self.load_sound),
                                                    2: ("*.pdf", self.load_pdf)}
 
+        # Instantiating list names files of recognitions
+        self.recognitions_images = []
+        self.recognitions_sounds = []
+        self.recognitions_pdfs = []
+        self.recognitions_files_name = {0: self.recognitions_images, 1: self.recognitions_sounds,
+                                        2: self.recognitions_pdfs}
+
     def load_page_inf(self, plain_text_edit, radio_but_ru, radio_but_en, prefix_name_fie):
         """Loads the widget (components) information page"""
         name_file = prefix_name_fie
@@ -62,13 +69,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def load_file(self):
         """Opens a one file dialog box"""
         widget_in_stack = self.stackedWidget.currentIndex()  # get the index of the current widget
+        self.clear_files(widget_in_stack)
         file_type = self.set_types_and_func_file_for_widget[widget_in_stack][0]
         file = QFileDialog.getOpenFileName(self, "Choose File", ":/", file_type)
         way_to_file = file[0]
         self.set_types_and_func_file_for_widget[widget_in_stack][1](way_to_file)  # call the function
+        self.recognitions_files_name[widget_in_stack].append(way_to_file)  # add the name of the file to the list
 
     @QtCore.Slot()
     def load_dir(self):
+        widget_in_stack = self.stackedWidget.currentIndex()  # get the index of the current widget
+        self.clear_files(widget_in_stack)
         dir = QFileDialog.getExistingDirectory(self,
                                                'Choose Directory')  # create a file dialog box
         if dir:
@@ -77,7 +88,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     # check if the file has a valid extension
                     if check_file_extension(file,
                                          self.set_types_and_func_file_for_widget[self.stackedWidget.currentIndex()][0]):
-                        print("yes")
+                        self.recognitions_files_name[widget_in_stack].append(root + "/" + file)  # add the name of the file to the list
+        if self.recognitions_files_name[widget_in_stack]:
+            path = self.recognitions_files_name[widget_in_stack][0]
+            self.set_types_and_func_file_for_widget[widget_in_stack][1](path)
+
+    def clear_files(self, widget_in_stack):
+        del self.recognitions_files_name[widget_in_stack][:]  # delete all items in the list
 
     def placement_image(self, path):
         """Placing the image in the label"""
