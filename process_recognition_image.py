@@ -1,7 +1,6 @@
 from PIL import Image, ImageEnhance, ImageDraw
 import numpy as np
 import easyocr
-import threading
 
 
 class RecognitionProcessingImage:
@@ -27,7 +26,7 @@ class RecognitionProcessingImage:
     def change_contrast(self):
         """Change the contrast"""
         enhancer = ImageEnhance.Contrast(self.image)
-        self.image = enhancer.enhance(1.5)  # Increase contrast by 50%
+        self.image = enhancer.enhance(1.75)  # Increase contrast by 75%
 
     def change_threshold(self):
         """Change the threshold"""
@@ -66,11 +65,13 @@ class RecognitionProcessingImage:
         for detection in results:
             res_text += detection[1] + "\n"
             bbox = detection[0]  # The borders of the recognized block
+            self.draw_borders_on_image(bbox)
         return res_text
 
     def draw_borders_on_image(self, border):
         """Draw the borders of the recognized text"""
         draw = ImageDraw.Draw(self.before_image)
-        left_top = border[0]
-        right_bottom = border[3]
-        draw.rectangle([right_bottom, left_top], fill=None, outline=None, width=1)
+        left_top = list(map(int, border[0]))
+        right_bottom = list(map(int, border[2]))
+        draw.rectangle([left_top[0], left_top[1], right_bottom[0], right_bottom[1]], fill=None,
+                       outline=(255, 0, 0), width=3)  # Draw the borders on the image
