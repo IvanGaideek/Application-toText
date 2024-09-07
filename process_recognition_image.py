@@ -73,5 +73,11 @@ class RecognitionProcessingImage:
         draw = ImageDraw.Draw(self.before_image)
         left_top = list(map(int, border[0]))
         right_bottom = list(map(int, border[2]))
-        draw.rectangle([left_top[0], left_top[1], right_bottom[0], right_bottom[1]], fill=None,
+        ltx, lty, rbx, rby = left_top[0], left_top[1], right_bottom[0], right_bottom[1]
+        # Swap the coordinates if necessary
+        if ltx > rbx:
+            ltx, rbx = rbx, ltx
+        if lty > rby:
+            lty, rby = rby, lty
+        draw.rectangle([ltx, lty, rbx, rby], fill=None,
                        outline=(255, 0, 0), width=3)  # Draw the borders on the image

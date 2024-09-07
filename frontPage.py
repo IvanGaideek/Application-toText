@@ -1,9 +1,11 @@
 import os
 
+from PIL.ImageQt import ImageQt
 from PySide6 import QtCore
-from PySide6.QtGui import QPixmap, Qt
+from PySide6.QtGui import QPixmap, Qt, QImage
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from auxiliary_funcs import check_file_extension, wrap_text, read_file
+from process_recognition_image import RecognitionProcessingImage
 from ui_index import Ui_MainWindow
 
 dir_for_info = "docs/"
@@ -27,6 +29,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.but_developer.clicked.connect(self.switch_to_developer_page)
         self.but_technologies.clicked.connect(self.switch_to_technologies_page)
 
+        # Connecting buttons to functions recognitions
+        self.but_recognition_image.clicked.connect(self.recognition_images_files)
+
         self.but_exit.clicked.connect(self.exit_or_close)
 
         # Instantiating information pages
@@ -41,7 +46,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                    self.choice_dir: self.load_dir}  # Dictionary: key = action, value = function
         for act in actions:
             act.triggered.connect(actions[act])
-        self.set_types_and_func_file_for_widget = {0: ("*.png *.jpeg *.jpg *.webp *.bmp *.gif *.svg", self.placement_image),
+        self.set_types_and_func_file_for_widget = {0: ("*.png *.jpeg *.jpg *.webp *.bmp *.gif *.svg",
+                                                       self.placement_image),
                                                    1: ("*.mp3 *.wav", self.load_sound),
                                                    2: ("*.pdf", self.load_pdf)}
 
@@ -73,8 +79,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         file_type = self.set_types_and_func_file_for_widget[widget_in_stack][0]
         file = QFileDialog.getOpenFileName(self, "Choose File", ":/", file_type)
         way_to_file = file[0]
-        self.set_types_and_func_file_for_widget[widget_in_stack][1](way_to_file)  # call the function
-        self.recognitions_files_name[widget_in_stack].append(way_to_file)  # add the name of the file to the list
+        if way_to_file != "":
+            self.set_types_and_func_file_for_widget[widget_in_stack][1](way_to_file)  # call the function
+            self.recognitions_files_name[widget_in_stack].append(way_to_file)  # add the name of the file to the list
 
     @QtCore.Slot()
     def load_dir(self):
@@ -89,17 +96,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     if check_file_extension(file,
                                          self.set_types_and_func_file_for_widget[self.stackedWidget.currentIndex()][0]):
                         self.recognitions_files_name[widget_in_stack].append(root + "/" + file)  # add the name of the file to the list
+        # call the function for the first file
         if self.recognitions_files_name[widget_in_stack]:
             path = self.recognitions_files_name[widget_in_stack][0]
             self.set_types_and_func_file_for_widget[widget_in_stack][1](path)
 
+    def recognition_images_files(self):
+        """Recognition of all chosen images"""
+        for path in self.recognitions_images:
+            image = RecognitionProcessingImage(path)  # object recognition image
+            text = image.recognize_text
+            self.text_edit_image.setPlainText(text)
+            self.placement_image(image.before_image)  # place the image with the borders in the label
+
     def clear_files(self, widget_in_stack):
         del self.recognitions_files_name[widget_in_stack][:]  # delete all items in the list
 
-    def placement_image(self, path):
+    def placement_image(self, image):
         """Placing the image in the label"""
-        self.pixmap = QPixmap(path)
-        scaled = self.pixmap.scaled(self.label_image.size(), QtCore.Qt.KeepAspectRatio)  # scaling the image
+        if type(image) == str:
+            pixmap = QPixmap(image)
+        else:
+            image = ImageQt(image)
+            pixmap = QPixmap.fromImage(image)
+        scaled = pixmap.scaled(self.label_image.size(), QtCore.Qt.KeepAspectRatio)  # scaling the image
         self.label_image.setPixmap(scaled)
 
     def load_sound(self, path):
