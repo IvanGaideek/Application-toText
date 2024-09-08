@@ -34,3 +34,7 @@ def wrap_text(your_label: QLabel):
         pos += 1
 
     your_label.setText(text)  # Set the wrapped text back to the label
+
+
+def clear_result(your_label: QLabel):
+    your_label.setText("")

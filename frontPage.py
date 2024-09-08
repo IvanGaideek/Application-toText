@@ -2,10 +2,10 @@ import os
 
 from PIL.ImageQt import ImageQt
 from PySide6 import QtCore
-from PySide6.QtGui import QPixmap, Qt, QImage
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QMainWindow, QFileDialog
-from auxiliary_funcs import check_file_extension, wrap_text, read_file
-from process_recognition_image import RecognitionProcessingImage
+from auxiliary_funcs import check_file_extension, wrap_text, read_file, clear_result
+from threads import RecognitionThread
 from ui_index import Ui_MainWindow
 
 dir_for_info = "docs/"
@@ -74,6 +74,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @QtCore.Slot()
     def load_file(self):
         """Opens a one file dialog box"""
+        clear_result(self.result)
         widget_in_stack = self.stackedWidget.currentIndex()  # get the index of the current widget
         self.clear_files(widget_in_stack)
         file_type = self.set_types_and_func_file_for_widget[widget_in_stack][0]
@@ -85,6 +86,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @QtCore.Slot()
     def load_dir(self):
+        clear_result(self.result)
         widget_in_stack = self.stackedWidget.currentIndex()  # get the index of the current widget
         self.clear_files(widget_in_stack)
         dir = QFileDialog.getExistingDirectory(self,
@@ -101,13 +103,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             path = self.recognitions_files_name[widget_in_stack][0]
             self.set_types_and_func_file_for_widget[widget_in_stack][1](path)
 
+    @QtCore.Slot()
     def recognition_images_files(self):
-        """Recognition of all chosen images"""
-        for path in self.recognitions_images:
-            image = RecognitionProcessingImage(path)  # object recognition image
-            text = image.recognize_text
-            self.text_edit_image.setPlainText(text)
-            self.placement_image(image.before_image)  # place the image with the borders in the label
+        """Recognition of all chosen images in a separate thread."""
+        if not self.recognitions_images:
+            self.result.setText("There are no images!")
+            return  # If there are no images, do nothing
+
+        self.but_recognition_image.setEnabled(False)  # Disable the button "Recognition of images"
+        self.recognition_thread = RecognitionThread(self.recognitions_images)
+        self.recognition_thread.finished_signal.connect(self.update_ui_after_recognition)
+        self.recognition_thread.start()  # Launch the thread
+
+    @QtCore.Slot(str, list)  # in list: Image.Image
+    def update_ui_after_recognition(self, result_text, final_images):
+        """Update UI after recognition is finished."""
+        self.text_edit_image.setPlainText(result_text)
+        self.placement_image(final_images[-1])  # Update Image in the UI
+        self.result.setText("Image recognition is finished!")
+        self.but_recognition_image.setEnabled(True)  # Enable the button "Recognition of images"
 
     def clear_files(self, widget_in_stack):
         del self.recognitions_files_name[widget_in_stack][:]  # delete all items in the list

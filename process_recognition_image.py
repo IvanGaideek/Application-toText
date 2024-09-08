@@ -1,9 +1,11 @@
 from PIL import Image, ImageEnhance, ImageDraw
 import numpy as np
 import easyocr
+from PySide6 import QtCore
 
 
 class RecognitionProcessingImage:
+
     def __init__(self, image_path):
         self.image_path = image_path
         self.before_image = None  # To draw recognized text
@@ -61,7 +63,7 @@ class RecognitionProcessingImage:
         results = reader.readtext(img_np)
         res_text = ""
 
-        # Вывод результатов
+        # Get text from results
         for detection in results:
             res_text += detection[1] + "\n"
             bbox = detection[0]  # The borders of the recognized block
