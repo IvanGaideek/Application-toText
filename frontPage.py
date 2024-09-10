@@ -5,7 +5,7 @@ from PySide6 import QtCore
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from auxiliary_funcs import check_file_extension, wrap_text, read_file, clear_result
-from threads import RecognitionThread
+from threads import RecognitionThread, RecognitionThreadSound
 from ui_index import Ui_MainWindow
 
 dir_for_info = "docs/"
@@ -31,6 +31,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Connecting buttons to functions recognitions
         self.but_recognition_image.clicked.connect(self.recognition_images_files)
+        self.but_recognition_sound.clicked.connect(self.recognition_sound_files)
 
         self.but_exit.clicked.connect(self.exit_or_close)
 
@@ -122,6 +123,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.placement_image(final_images[-1])  # Update Image in the UI
         self.result.setText("Image recognition is finished!")
         self.but_recognition_image.setEnabled(True)  # Enable the button "Recognition of images"
+
+    @QtCore.Slot()
+    def recognition_sound_files(self):
+        """Recognition of all chosen sounds files in a separate thread."""
+        if not self.recognitions_sounds:
+            self.result.setText("There are no sounds!")
+            return  # If there are no sounds, do nothing
+
+        self.but_recognition_sound.setEnabled(False)  # Disable the button "Recognition of sounds"
+        self.recognition_thread = RecognitionThreadSound(self.recognitions_sounds)
+        self.recognition_thread.finished_signal.connect(self.update_ui_after_recognition_sound)
+        self.recognition_thread.start()  # Launch the thread
+
+    @QtCore.Slot(str)
+    def update_ui_after_recognition_sound(self, result_text):
+        """Update UI after recognition is finished."""
+        self.text_edit_sound.setPlainText(result_text)
+        self.result.setText("Sound recognition is finished!")  # Update result text
+        self.but_recognition_sound.setEnabled(True)  # Enable the button "Recognition of sounds"
 
     def clear_files(self, widget_in_stack):
         del self.recognitions_files_name[widget_in_stack][:]  # delete all items in the list

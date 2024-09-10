@@ -1,7 +1,6 @@
 from PIL import Image, ImageEnhance, ImageDraw
 import numpy as np
 import easyocr
-from PySide6 import QtCore
 
 
 class RecognitionProcessingImage:
