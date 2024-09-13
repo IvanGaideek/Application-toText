@@ -5,7 +5,7 @@ from PySide6 import QtCore
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from auxiliary_funcs import check_file_extension, wrap_text, read_file, clear_result
-from threads import RecognitionThread, RecognitionThreadSound
+from threads import RecognitionThread, RecognitionThreadSound, RecognitionThreadPDF
 from ui_index import Ui_MainWindow
 
 dir_for_info = "docs/"
@@ -32,6 +32,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Connecting buttons to functions recognitions
         self.but_recognition_image.clicked.connect(self.recognition_images_files)
         self.but_recognition_sound.clicked.connect(self.recognition_sound_files)
+        self.but_recognition_pdf.clicked.connect(self.recognition_pdf_files)
 
         self.but_exit.clicked.connect(self.exit_or_close)
 
@@ -142,6 +143,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.text_edit_sound.setPlainText(result_text)
         self.result.setText("Sound recognition is finished!")  # Update result text
         self.but_recognition_sound.setEnabled(True)  # Enable the button "Recognition of sounds"
+
+    @QtCore.Slot(str)
+    def recognition_pdf_files(self):
+        """Recognition of all chosen PDF files in a separate thread."""
+        if not self.recognitions_pdfs:
+            self.result.setText("There are no PDFs!")
+            return  # If there are no PDFs, do nothing
+
+        self.but_recognition_pdf.setEnabled(False)  # Disable the button "Recognition of PDFs"
+        self.recognition_thread = RecognitionThreadPDF(self.recognitions_pdfs)
+        self.recognition_thread.finished_signal.connect(self.update_ui_after_recognition_pdf)
+        self.recognition_thread.start()  # Launch the thread
+
+    @QtCore.Slot(str)
+    def update_ui_after_recognition_pdf(self, result_text):
+        """Update UI after recognition is finished."""
+        self.text_edit_pdf.setPlainText(result_text)
+        self.result.setText("PDF recognition is finished!")  # Update result text
+        self.but_recognition_pdf.setEnabled(True)  # Enable the button "Recognition of PDFs"
 
     def clear_files(self, widget_in_stack):
         del self.recognitions_files_name[widget_in_stack][:]  # delete all items in the list

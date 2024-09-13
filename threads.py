@@ -1,6 +1,7 @@
 from PySide6 import QtCore
 
 from process_recognition_image import RecognitionProcessingImage
+from process_recognition_pdf import RecognitionProcessingPDF
 from process_recognition_sound import RecognitionProcessingSound
 
 
@@ -35,5 +36,20 @@ class RecognitionThreadSound(QtCore.QThread):
         result_text = ""
         for path in self.audio_paths:
             result_text += RecognitionProcessingSound(path).recognize_text
+            result_text += "\n----------Separator-----------\n"
+        self.finished_signal.emit(result_text)  # Signal that the thread is finished
+
+
+class RecognitionThreadPDF(QtCore.QThread):
+    finished_signal = QtCore.Signal(str)
+
+    def __init__(self, pdf_paths):
+        super().__init__()
+        self.pdf_paths = pdf_paths  # List of paths to PDF files
+
+    def run(self):
+        result_text = ""
+        for path in self.pdf_paths:
+            result_text += RecognitionProcessingPDF(path).recognize
             result_text += "\n----------Separator-----------\n"
         self.finished_signal.emit(result_text)  # Signal that the thread is finished
