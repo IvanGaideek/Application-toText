@@ -76,6 +76,7 @@ class RecognitionProcessingImage:
         return res_text
 
     def convert_to_TXT(self, text):
+        """Converts the image to .txt format."""
         with open(self.save_path + ".txt", "w", encoding="utf-8") as file:
             file.write(text)
 
@@ -83,7 +84,7 @@ class RecognitionProcessingImage:
     def recognize_text(self):
         """Main function to recognize"""
         res_text = self.get_text()
-        self.convert_to_TXT(res_text)
+        # self.convert_to_TXT(res_text)
         return res_text
 
     def draw_borders_on_image(self, border):
