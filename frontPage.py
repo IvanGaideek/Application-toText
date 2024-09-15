@@ -102,7 +102,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.recognitions_files_name[widget_in_stack].append(root + "/" + file)  # add the name of the file to the list
         # call the function for the first file
         if self.recognitions_files_name[widget_in_stack]:
-            path = self.recognitions_files_name[widget_in_stack][0]
+            path = self.recognitions_files_name[widget_in_stack][0].split("/")[-2]
             self.set_types_and_func_file_for_widget[widget_in_stack][1](path)
 
     @QtCore.Slot()
@@ -181,7 +181,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         wrap_text(self.label_select_audio_file)
 
     def load_pdf(self, path):
-        self.label_select_pdf_file.setText(path.split("/")[-1])  # change the text (name file) in the label
+        self.label_select_pdf_file.setText(path.split("/")[-1])  # change the text (name file or directory) in the label
         wrap_text(self.label_select_pdf_file)
 
     def switch_to_rimage_page(self):
