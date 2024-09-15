@@ -1,11 +1,12 @@
 import os
 
 from PIL.ImageQt import ImageQt
+from PIL import Image
 from PySide6 import QtCore
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from auxiliary_funcs import check_file_extension, wrap_text, read_file, clear_result
-from threads import RecognitionThread, RecognitionThreadSound, RecognitionThreadPDF
+from threads import RecognitionThreadImage, RecognitionThreadSound, RecognitionThreadPDF
 from ui_index import Ui_MainWindow
 
 dir_for_info = "docs/"
@@ -103,7 +104,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # call the function for the first file
         if self.recognitions_files_name[widget_in_stack]:
             path = self.recognitions_files_name[widget_in_stack][0].split("/")[-2]
-            self.set_types_and_func_file_for_widget[widget_in_stack][1](path)
+            first_file_path = self.recognitions_files_name[widget_in_stack][0]
+            self.set_types_and_func_file_for_widget[widget_in_stack][1](first_file_path)
 
     @QtCore.Slot()
     def recognition_images_files(self):
@@ -113,16 +115,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return  # If there are no images, do nothing
 
         self.but_recognition_image.setEnabled(False)  # Disable the button "Recognition of images"
-        self.recognition_thread = RecognitionThread(self.recognitions_images)
-        self.recognition_thread.finished_signal.connect(self.update_ui_after_recognition)
+        self.recognition_thread = RecognitionThreadImage(self.recognitions_images)
+        self.recognition_thread.finished_one_rec_signal.connect(self.update_ui_after_recognition)
+        self.recognition_thread.all_finished_signal.connect(self.finish_proccess_rec_images)  # end recognition
         self.recognition_thread.start()  # Launch the thread
+        self.counter_images = 0
 
-    @QtCore.Slot(str, list)  # in list: Image.Image
-    def update_ui_after_recognition(self, result_text, final_images):
+    @QtCore.Slot(str, Image.Image)
+    def update_ui_after_recognition(self, result_text, image):
         """Update UI after recognition is finished."""
         self.text_edit_image.setPlainText(result_text)
-        self.placement_image(final_images[-1])  # Update Image in the UI
-        self.result.setText("Image recognition is finished!")
+        self.placement_image(image)  # Update Image in the UI
+        self.counter_images += 1
+        self.result.setText(f"Image recognition {self.counter_images} / {len(self.recognitions_images)} ...")
+
+    def finish_proccess_rec_images(self):
+        self.result.setText(f"Image recognition is finished!({self.counter_images} images)")
         self.but_recognition_image.setEnabled(True)  # Enable the button "Recognition of images"
 
     @QtCore.Slot()

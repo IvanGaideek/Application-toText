@@ -1,3 +1,5 @@
+import json
+
 from PIL import Image, ImageEnhance, ImageDraw
 import numpy as np
 import easyocr
@@ -9,6 +11,11 @@ class RecognitionProcessingImage:
         self.image_path = image_path
         self.before_image = None  # To draw recognized text
         self.__load_image()
+        # Open and read the JSON (settings) file
+        with open('Settings/cur_settings.json', 'r') as file:
+            data = json.load(file)
+        save_path_dir = data["save_path"]["for_image"]
+        self.save_path = save_path_dir + "/" + self.image_path.split("/")[-1].split(".")[0]
 
     def __load_image(self):
         self.image = Image.open(self.image_path)
@@ -47,8 +54,7 @@ class RecognitionProcessingImage:
         self.invert_color()
         return self.image
 
-    @property
-    def recognize_text(self):
+    def get_text(self):
         """Recognize text in the image"""
         processed_img = self.preprocess_image  # Convert image
 
@@ -67,6 +73,17 @@ class RecognitionProcessingImage:
             res_text += detection[1] + "\n"
             bbox = detection[0]  # The borders of the recognized block
             self.draw_borders_on_image(bbox)
+        return res_text
+
+    def convert_to_TXT(self, text):
+        with open(self.save_path + ".txt", "w", encoding="utf-8") as file:
+            file.write(text)
+
+    @property
+    def recognize_text(self):
+        """Main function to recognize"""
+        res_text = self.get_text()
+        self.convert_to_TXT(res_text)
         return res_text
 
     def draw_borders_on_image(self, border):

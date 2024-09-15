@@ -1,12 +1,14 @@
 from PySide6 import QtCore
+from PIL import Image
 
 from process_recognition_image import RecognitionProcessingImage
 from process_recognition_pdf import RecognitionProcessingPDF
 from process_recognition_sound import RecognitionProcessingSound
 
 
-class RecognitionThread(QtCore.QThread):
-    finished_signal = QtCore.Signal(str, list)  # in list: Image.Image
+class RecognitionThreadImage(QtCore.QThread):
+    finished_one_rec_signal = QtCore.Signal(str, Image.Image)  # A signal for transmitting the results of each image
+    all_finished_signal = QtCore.Signal()
 
     def __init__(self, image_paths):
         super().__init__()
@@ -14,15 +16,15 @@ class RecognitionThread(QtCore.QThread):
 
     def run(self):
         result_text = ""
-        final_images = []
 
         for path in self.image_paths:
             image = RecognitionProcessingImage(path)
             result_text += image.recognize_text  # Result text
             result_text += "\n----------Separator-----------\n"
-            final_images.append(image.before_image)  # Updated image after recognition
+            picture_image = image.before_image
+            self.finished_one_rec_signal.emit(result_text, picture_image)  # Signal that the thread is finished
 
-        self.finished_signal.emit(result_text, final_images)  # Signal that the thread is finished
+        self.all_finished_signal.emit()  # Signal that the thread is finished
 
 
 class RecognitionThreadSound(QtCore.QThread):
