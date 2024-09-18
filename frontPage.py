@@ -151,6 +151,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.text_edit_sound.setPlainText(result_text)
         self.result.setText("Sound recognition is finished!")  # Update result text
         self.but_recognition_sound.setEnabled(True)  # Enable the button "Recognition of sounds"
+        # self.recognition_thread.quit()
 
     @QtCore.Slot(str)
     def recognition_pdf_files(self):
