@@ -3,5 +3,9 @@
     "for_pdf": "C:/",
     "for_sound": "C:/Users/Public/Music/",
     "for_image": "C:/Users/Public/Documents"
+  },
+  "FOR_begin_splash": {
+    "path_to_gif": "./Design/begin_loading_app.gif",
+    "progressbar_value": 35
   }
 }

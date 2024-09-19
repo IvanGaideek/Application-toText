@@ -4,6 +4,7 @@ from PySide6.QtGui import QFontMetrics
 from PySide6.QtWidgets import QLabel, QApplication
 
 from splash_begin import MovieSplashScreen
+from operation_with_settings import get_settings_for_splash
 
 
 def check_file_extension(filename, valid_extensions):
@@ -42,8 +43,7 @@ def wrap_text(your_label: QLabel):
 
 def work_begin_window(app: QApplication):
     """The boot window at the beginning of the application launch"""
-    path_to_gif = 'C:/Users/gajna/OneDrive/Изображения/Saved Pictures/2.gif'
-    progressbar_value = 30
+    path_to_gif, progressbar_value = get_settings_for_splash()
 
     splash = MovieSplashScreen(path_to_gif, progressbar_value)
     splash.show()
@@ -51,7 +51,7 @@ def work_begin_window(app: QApplication):
     for i in range(progressbar_value):
         splash.update_progress(i)
         t = time.time()
-        while time.time() < t + 0.1:
+        while time.time() < t + 0.04:
             app.processEvents()
 
         time.sleep(0.1)  # Adjust sleep time if needed
