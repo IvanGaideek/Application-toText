@@ -115,10 +115,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return  # If there are no images, do nothing
 
         self.but_recognition_image.setEnabled(False)  # Disable the button "Recognition of images"
-        self.recognition_thread = RecognitionThreadImage(self.recognitions_images)
-        self.recognition_thread.finished_one_rec_signal.connect(self.update_ui_after_recognition)
-        self.recognition_thread.all_finished_signal.connect(self.finish_proccess_rec_images)  # end recognition
-        self.recognition_thread.start()  # Launch the thread
+        self.recognition_thread_img = RecognitionThreadImage(self.recognitions_images)
+        self.recognition_thread_img.finished_one_rec_signal.connect(self.update_ui_after_recognition)
+        self.recognition_thread_img.all_finished_signal.connect(self.finish_proccess_rec_images)  # end recognition
+        self.recognition_thread_img.start()  # Launch the thread
         self.counter_images = 0
 
     @QtCore.Slot(str, Image.Image)
@@ -131,6 +131,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def finish_proccess_rec_images(self):
         self.result.setText(f"Image recognition is finished!({self.counter_images} images)")
+        self.recognition_thread_img.quit()  # closing the thread
         self.but_recognition_image.setEnabled(True)  # Enable the button "Recognition of images"
 
     @QtCore.Slot()
@@ -141,17 +142,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return  # If there are no sounds, do nothing
 
         self.but_recognition_sound.setEnabled(False)  # Disable the button "Recognition of sounds"
-        self.recognition_thread = RecognitionThreadSound(self.recognitions_sounds)
-        self.recognition_thread.finished_signal.connect(self.update_ui_after_recognition_sound)
-        self.recognition_thread.start()  # Launch the thread
+        self.recognition_thread_audio = RecognitionThreadSound(self.recognitions_sounds)
+        self.recognition_thread_audio.finished_signal.connect(self.update_ui_after_recognition_sound)
+        self.recognition_thread_audio.start()  # Launch the thread
 
     @QtCore.Slot(str)
     def update_ui_after_recognition_sound(self, result_text):
         """Update UI after recognition is finished."""
         self.text_edit_sound.setPlainText(result_text)
         self.result.setText("Sound recognition is finished!")  # Update result text
+        self.recognition_thread_audio.quit()  # closing the thread
         self.but_recognition_sound.setEnabled(True)  # Enable the button "Recognition of sounds"
-        # self.recognition_thread.quit()
 
     @QtCore.Slot(str)
     def recognition_pdf_files(self):
@@ -161,15 +162,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return  # If there are no PDFs, do nothing
 
         self.but_recognition_pdf.setEnabled(False)  # Disable the button "Recognition of PDFs"
-        self.recognition_thread = RecognitionThreadPDF(self.recognitions_pdfs)
-        self.recognition_thread.finished_signal.connect(self.update_ui_after_recognition_pdf)
-        self.recognition_thread.start()  # Launch the thread
+        self.recognition_thread_pdf = RecognitionThreadPDF(self.recognitions_pdfs)
+        self.recognition_thread_pdf.finished_signal.connect(self.update_ui_after_recognition_pdf)
+        self.recognition_thread_pdf.start()  # Launch the thread
 
     @QtCore.Slot(str)
     def update_ui_after_recognition_pdf(self, result_text):
         """Update UI after recognition is finished."""
         self.text_edit_pdf.setPlainText(result_text)
         self.result.setText("PDF recognition is finished!")  # Update result text
+        self.recognition_thread_pdf.quit()  # closing the thread
         self.but_recognition_pdf.setEnabled(True)  # Enable the button "Recognition of PDFs"
 
     def clear_files(self, widget_in_stack):
