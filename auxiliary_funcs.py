@@ -59,5 +59,14 @@ def work_begin_window(app: QApplication):
     return splash
 
 
+def get_current_time():
+    current_time_seconds = time.time()
+    # Convert to structured time
+    local_time = time.localtime(current_time_seconds)
+    # Formatting the time into a string
+    formatted_time = time.strftime("%H:%M:%S", local_time)
+    return formatted_time
+
+
 def clear_result(your_label: QLabel):
     your_label.setText("")

@@ -3,6 +3,7 @@ import os
 
 import fitz  # PyMuPDF
 from pdf2docx import Converter
+from auxiliary_funcs import get_current_time
 import csv
 
 
@@ -14,14 +15,17 @@ class RecognitionProcessingPDF:
             data = json.load(file)
         save_path = data["save_path"]["for_pdf"]
         self.create_save_directories(save_path)
+        self.errors = []  # List of errors (time, str)
 
     def create_save_directories(self, directory):
         self.name_save_one_pdf = self.pdf_path.split(".")[0].split("/")[-1]  # the directory of files of one PDF
-        self.path_save_one = directory + "/" + self.name_save_one_pdf
-        os.makedirs(self.path_save_one)
+        self.path_save_one = directory + self.name_save_one_pdf
+        if not os.path.isdir(self.path_save_one):
+            os.makedirs(self.path_save_one)
         dir_list = ["tables", "images"]  # the directories of files of one PDF
         for dir in dir_list:
-            os.makedirs(self.path_save_one + "/" + dir)
+            if not os.path.isdir(self.path_save_one + "/" + dir):
+                os.makedirs(self.path_save_one + "/" + dir)
 
     @property
     def recognize(self):
@@ -30,14 +34,14 @@ class RecognitionProcessingPDF:
         try:
             self.save_tables()
         except UnicodeEncodeError:
-            pass  # Тут надо сделать оповещения пользователя об ошибке
+            self.errors.append((get_current_time(), "The problem with the encoding of the table"))
         try:
             self.convert_to_TXT()
         except UnicodeEncodeError:
-            pass  # Тут надо сделать оповещения пользователя об ошибке
+            self.errors.append((get_current_time(), "The problem with the encoding of the text"))
         self.save_images()
         self.convert_to_WORD()
-        return text
+        return text, self.errors
 
     def convert_to_WORD(self):
         # Create a Converter object

@@ -8,8 +8,7 @@ from PySide6.QtWidgets import QMainWindow, QFileDialog
 from auxiliary_funcs import check_file_extension, wrap_text, read_file, clear_result
 from threads import RecognitionThreadImage, RecognitionThreadSound, RecognitionThreadPDF
 from ui_index import Ui_MainWindow
-
-dir_for_info = "docs/"
+from CONST import NUMS_ERRORS_IN_LIST, DIR_FOR_INFO
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -68,11 +67,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             name_file += "ru.txt"
         else:
             name_file += "en.txt"
-        full_name_file = dir_for_info + name_file
+        full_name_file = DIR_FOR_INFO + name_file
         read_file(plain_text_edit, full_name_file)
         # Reaction to radio buttons
-        radio_but_ru.clicked.connect(lambda: read_file(plain_text_edit, dir_for_info + prefix_name_fie + "ru.txt"))
-        radio_but_en.clicked.connect(lambda: read_file(plain_text_edit, dir_for_info + prefix_name_fie + "en.txt"))
+        radio_but_ru.clicked.connect(lambda: read_file(plain_text_edit, DIR_FOR_INFO + prefix_name_fie + "ru.txt"))
+        radio_but_en.clicked.connect(lambda: read_file(plain_text_edit, DIR_FOR_INFO + prefix_name_fie + "en.txt"))
 
     @QtCore.Slot()
     def load_file(self):
@@ -146,9 +145,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.recognition_thread_audio.finished_signal.connect(self.update_ui_after_recognition_sound)
         self.recognition_thread_audio.start()  # Launch the thread
 
-    @QtCore.Slot(str)
-    def update_ui_after_recognition_sound(self, result_text):
+    @QtCore.Slot(str, list)
+    def update_ui_after_recognition_sound(self, result_text, errors):
         """Update UI after recognition is finished."""
+        self.add_errors(errors)
         self.text_edit_sound.setPlainText(result_text)
         self.result.setText("Sound recognition is finished!")  # Update result text
         self.recognition_thread_audio.quit()  # closing the thread
@@ -166,13 +166,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.recognition_thread_pdf.finished_signal.connect(self.update_ui_after_recognition_pdf)
         self.recognition_thread_pdf.start()  # Launch the thread
 
-    @QtCore.Slot(str)
-    def update_ui_after_recognition_pdf(self, result_text):
+    @QtCore.Slot(str, list)
+    def update_ui_after_recognition_pdf(self, result_text, errors):
         """Update UI after recognition is finished."""
+        self.add_errors(errors)
         self.text_edit_pdf.setPlainText(result_text)
         self.result.setText("PDF recognition is finished!")  # Update result text
         self.recognition_thread_pdf.quit()  # closing the thread
         self.but_recognition_pdf.setEnabled(True)  # Enable the button "Recognition of PDFs"
+
+    def add_errors(self, errors):
+        errors = errors[:NUMS_ERRORS_IN_LIST + 1]
+        for time, text in errors:
+            self.errors_log_listWidget.insertItem(1, f"{time}: {text}")
+        for row in range(self.errors_log_listWidget.count() - 1, NUMS_ERRORS_IN_LIST, -1):
+            self.errors_log_listWidget.takeItem(NUMS_ERRORS_IN_LIST + 1)
 
     def clear_files(self, widget_in_stack):
         del self.recognitions_files_name[widget_in_stack][:]  # delete all items in the list

@@ -28,7 +28,7 @@ class RecognitionThreadImage(QtCore.QThread):
 
 
 class RecognitionThreadSound(QtCore.QThread):
-    finished_signal = QtCore.Signal(str)
+    finished_signal = QtCore.Signal(str, list)
 
     def __init__(self, audio_paths):
         super().__init__()
@@ -36,14 +36,17 @@ class RecognitionThreadSound(QtCore.QThread):
 
     def run(self):
         result_text = ""
+        all_errors = []
         for path in self.audio_paths:
-            result_text += RecognitionProcessingSound(path).recognize_text
+            text, errors = RecognitionProcessingSound(path).recognize_text
+            all_errors = errors + all_errors
+            result_text += text
             result_text += "\n----------Separator-----------\n"
-        self.finished_signal.emit(result_text)  # Signal that the thread is finished
+        self.finished_signal.emit(result_text, all_errors)  # Signal that the thread is finished
 
 
 class RecognitionThreadPDF(QtCore.QThread):
-    finished_signal = QtCore.Signal(str)
+    finished_signal = QtCore.Signal(str, list)
 
     def __init__(self, pdf_paths):
         super().__init__()
@@ -51,7 +54,10 @@ class RecognitionThreadPDF(QtCore.QThread):
 
     def run(self):
         result_text = ""
+        all_errors = []
         for path in self.pdf_paths:
-            result_text += RecognitionProcessingPDF(path).recognize
+            text, errors = RecognitionProcessingPDF(path).recognize
+            all_errors = errors + all_errors
+            result_text += text
             result_text += "\n----------Separator-----------\n"
-        self.finished_signal.emit(result_text)  # Signal that the thread is finished
+        self.finished_signal.emit(result_text, all_errors)  # Signal that the thread is finished

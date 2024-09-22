@@ -15,7 +15,7 @@ class RecognitionProcessingImage:
         with open('Settings/cur_settings.json', 'r') as file:
             data = json.load(file)
         save_path_dir = data["save_path"]["for_image"]
-        self.save_path = save_path_dir + "/" + self.image_path.split("/")[-1].split(".")[0]
+        self.save_path = save_path_dir + self.image_path.split("/")[-1].split(".")[0]
 
     def __load_image(self):
         self.image = Image.open(self.image_path)
