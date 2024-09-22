@@ -1700,7 +1700,7 @@ QRadioButton::indicator:checked {
               <set>Qt::ImhNone</set>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="page_image">
               <property name="contextMenuPolicy">
@@ -2260,6 +2260,20 @@ color: rgb(2, 2, 2);</string>
             <property name="text">
              <string>Here is the analysis of the result</string>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="errors_log_listWidget">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(171, 184, 255, 100);
+color: rgb(2, 2, 2);
+border: 2px solid rgb(44, 181, 23);</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Errors:</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
