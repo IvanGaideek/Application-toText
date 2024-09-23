@@ -31,17 +31,23 @@ class RecognitionProcessingPDF:
     def recognize(self):
         """Determines by settings what needs to be extracted from the PDF file"""
         text = self.recognize_text()
-        try:
-            self.save_tables()
-        except UnicodeEncodeError:
-            self.errors.append((get_current_time(), "The problem with the encoding of the table"))
-        try:
-            self.convert_to_TXT()
-        except UnicodeEncodeError:
-            self.errors.append((get_current_time(), "The problem with the encoding of the text"))
-        self.save_images()
-        self.convert_to_WORD()
+        self.error_correction(self.save_tables, "The problem with the encoding of the table",
+                              "The problem with the permission of the dir for table")
+        self.error_correction(self.convert_to_TXT, "The problem with the encoding of the text",
+                              "The problem with the permission of the dir for text")
+        self.error_correction(self.save_images, "The problem with the encoding of the image",
+                              "The problem with the permission of the dir for image")
+        self.error_correction(self.convert_to_WORD, "The problem with the encoding of the word",
+                              "The problem with the permission of the dir for word")
         return text, self.errors
+
+    def error_correction(self, func, mes_unicode, mes_permission):
+        try:
+            func()  # Execute the function
+        except UnicodeEncodeError:
+            self.errors.append((get_current_time(), mes_unicode))
+        except PermissionError:
+            self.errors.append((get_current_time(), mes_permission))
 
     def convert_to_WORD(self):
         # Create a Converter object

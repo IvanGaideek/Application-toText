@@ -1,6 +1,7 @@
 import json
 
 from PIL import Image, ImageEnhance, ImageDraw
+from auxiliary_funcs import get_current_time
 import numpy as np
 import easyocr
 
@@ -8,6 +9,8 @@ import easyocr
 class RecognitionProcessingImage:
 
     def __init__(self, image_path):
+        self.errors = []  # List of errors (time, str)
+
         self.image_path = image_path
         self.before_image = None  # To draw recognized text
         self.__load_image()
@@ -18,8 +21,14 @@ class RecognitionProcessingImage:
         self.save_path = save_path_dir + self.image_path.split("/")[-1].split(".")[0]
 
     def __load_image(self):
-        self.image = Image.open(self.image_path)
-        self.before_image = self.image.copy()
+        try:
+            self.image = Image.open(self.image_path)
+            self.before_image = self.image.copy()
+        except FileNotFoundError:
+            self.errors.append((get_current_time(), "This file does not exist!"))
+            self.image = None
+        except Exception:
+            self.errors.append((get_current_time(), "An error occurred in the loading of the image"))
 
     def change_size(self):
         width, height = self.image.width, self.image.height
@@ -72,7 +81,10 @@ class RecognitionProcessingImage:
         for detection in results:
             res_text += detection[1] + "\n"
             bbox = detection[0]  # The borders of the recognized block
-            self.draw_borders_on_image(bbox)
+            try:
+                self.draw_borders_on_image(bbox)
+            except Exception:
+                self.errors.append((get_current_time(), "An error occurred in the drawing of the borders"))
         return res_text
 
     def convert_to_TXT(self, text):
@@ -84,8 +96,15 @@ class RecognitionProcessingImage:
     def recognize_text(self):
         """Main function to recognize"""
         res_text = self.get_text()
-        # self.convert_to_TXT(res_text)
-        return res_text
+        try:
+            self.convert_to_TXT(res_text)
+        except FileNotFoundError:
+            self.errors.append((get_current_time(), "The directory not found!"))  # Directory not found
+        except PermissionError:
+            self.errors.append((get_current_time(), "No permission to create a file"))  # No permission to create a file
+        except OSError as e:
+            self.errors.append((get_current_time(), "An error occurred in the OS"))  # An error occurred
+        return res_text, self.errors
 
     def draw_borders_on_image(self, border):
         """Draw the borders of the recognized text"""

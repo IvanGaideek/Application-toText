@@ -7,7 +7,7 @@ from process_recognition_sound import RecognitionProcessingSound
 
 
 class RecognitionThreadImage(QtCore.QThread):
-    finished_one_rec_signal = QtCore.Signal(str, Image.Image)  # A signal for transmitting the results of each image
+    finished_one_rec_signal = QtCore.Signal(str, Image.Image, list)  # A signal for transmitting the results of each image
     all_finished_signal = QtCore.Signal()
 
     def __init__(self, image_paths):
@@ -16,13 +16,16 @@ class RecognitionThreadImage(QtCore.QThread):
 
     def run(self):
         result_text = ""
+        all_errors = []
 
         for path in self.image_paths:
             image = RecognitionProcessingImage(path)
-            result_text += image.recognize_text  # Result text
+            text, errors = image.recognize_text
+            result_text += text  # Result text
+            all_errors = errors + all_errors
             result_text += "\n----------Separator-----------\n"
             picture_image = image.before_image
-            self.finished_one_rec_signal.emit(result_text, picture_image)  # Signal that the thread is finished
+            self.finished_one_rec_signal.emit(result_text, picture_image, errors)  # Signal that the thread is finished
 
         self.all_finished_signal.emit()  # Signal that the thread is finished
 

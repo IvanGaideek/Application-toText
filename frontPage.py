@@ -120,9 +120,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.recognition_thread_img.start()  # Launch the thread
         self.counter_images = 0
 
-    @QtCore.Slot(str, Image.Image)
-    def update_ui_after_recognition(self, result_text, image):
+    @QtCore.Slot(str, Image.Image, list)
+    def update_ui_after_recognition(self, result_text, image, errors):
         """Update UI after recognition is finished."""
+        self.add_errors(errors)
         self.text_edit_image.setPlainText(result_text)
         self.placement_image(image)  # Update Image in the UI
         self.counter_images += 1
