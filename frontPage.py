@@ -7,6 +7,7 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from auxiliary_funcs import check_file_extension, wrap_text, read_file, clear_result
 from threads import RecognitionThreadImage, RecognitionThreadSound, RecognitionThreadPDF
+from settings_image import SettingsImage
 from ui_index import Ui_MainWindow
 from CONST import NUMS_ERRORS_IN_LIST, DIR_FOR_INFO
 
@@ -52,6 +53,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                        self.placement_image),
                                                    1: ("*.mp3 *.wav", self.load_sound),
                                                    2: ("*.pdf", self.load_pdf)}
+
+        # Activated comboBox for choosing settings
+        self.but_edit.clicked.connect(self.activated_settings)
 
         # Instantiating list names files of recognitions
         self.recognitions_images = []
@@ -203,6 +207,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def load_pdf(self, path):
         self.label_select_pdf_file.setText(path.split("/")[-1])  # change the text (name file or directory) in the label
         wrap_text(self.label_select_pdf_file)
+
+    def activated_settings(self):
+        text = self.settings_process.currentText()  # Get the text at index.
+        self.obj = None  # object to app
+        if text == "Settings from image":
+            self.obj = SettingsImage()
+        elif text == "Settings from sound":
+            pass
+        elif text == "Settings from PDF":
+            pass
+        if self.obj is not None:
+            self.launch(self.obj)
+
+    def launch(self, app):
+        '''Initializes the application'''
+        app.show()
 
     def switch_to_rimage_page(self):
         self.stackedWidget.setCurrentIndex(0)

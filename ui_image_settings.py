@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (QAbstractButton, QApplication, QCheckBox, QComboB
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 import icons_rc
 
-class Ui_Form(object):
+class Ui_SettingsImage(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")

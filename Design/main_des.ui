@@ -1613,7 +1613,7 @@ QPushButton:pressed {
                </item>
                <item>
                 <property name="text">
-                 <string>Settingd from sound</string>
+                 <string>Settings from sound</string>
                 </property>
                 <property name="icon">
                  <iconset resource="icons.qrc">

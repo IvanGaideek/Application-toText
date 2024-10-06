@@ -1940,7 +1940,7 @@ class Ui_MainWindow(object):
         self.but_exit.setText(QCoreApplication.translate("MainWindow", u" EXIT", None))
         self.label_title.setText(QCoreApplication.translate("MainWindow", u"toText", None))
         self.settings_process.setItemText(0, QCoreApplication.translate("MainWindow", u"Settings from image", None))
-        self.settings_process.setItemText(1, QCoreApplication.translate("MainWindow", u"Settingd from sound", None))
+        self.settings_process.setItemText(1, QCoreApplication.translate("MainWindow", u"Settings from sound", None))
         self.settings_process.setItemText(2, QCoreApplication.translate("MainWindow", u"Settings from PDF", None))
 
         self.but_edit.setText(QCoreApplication.translate("MainWindow", u"edit", None))
