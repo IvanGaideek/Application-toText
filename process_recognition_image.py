@@ -17,6 +17,7 @@ class RecognitionProcessingImage:
         # Open and read the JSON (settings) file
         with open('Settings/cur_settings.json', 'r') as file:
             data = json.load(file)
+        self.values_setting = data["image_settings"]
         save_path_dir = data["save_path"]["for_image"]
         self.save_path = save_path_dir + self.image_path.split("/")[-1].split(".")[0]
 
@@ -30,20 +31,20 @@ class RecognitionProcessingImage:
         except Exception:
             self.errors.append((get_current_time(), "An error occurred in the loading of the image"))
 
-    def change_size(self):
+    def change_size(self, size=1.0):
         width, height = self.image.width, self.image.height
         # Change the image size (if necessary)
-        self.image = self.image.resize((int(width * 1.4), int(height * 1.4)), Image.LANCZOS)
+        self.image = self.image.resize((int(width * size), int(height * size)), Image.LANCZOS)
         self.before_image = self.image.copy()  # Save the original scale image
 
     def convert_to_gray(self):
         """Convert the image to grayscale"""
         self.image = self.image.convert("L")
 
-    def change_contrast(self):
+    def change_contrast(self, value=1.0):
         """Change the contrast"""
         enhancer = ImageEnhance.Contrast(self.image)
-        self.image = enhancer.enhance(1.75)  # Increase contrast by 75%
+        self.image = enhancer.enhance(value)  # Increase contrast
 
     def change_threshold(self):
         """Change the threshold"""
@@ -56,11 +57,18 @@ class RecognitionProcessingImage:
     @property
     def preprocess_image(self):
         """Preparatory image processing"""
-        self.change_size()
-        self.convert_to_gray()
-        self.change_contrast()
-        self.change_threshold()
-        self.invert_color()
+        self.change_size(self.values_setting["SIZE_TRANSFORM_IMG"])
+        if self.values_setting["CONVERT_IMG"] == "bitmap":
+            self.convert_to_gray()
+            self.change_contrast(self.values_setting["CONTRAST_RATIO"])
+            self.change_threshold()
+        elif self.values_setting["CONVERT_IMG"] == "gray":
+            self.convert_to_gray()
+            self.change_contrast(self.values_setting["CONTRAST_RATIO"])
+        else:
+            self.change_contrast(self.values_setting["CONTRAST_RATIO"])
+        if self.values_setting["INVERT_IMG"]:
+            self.invert_color()
         return self.image
 
     def get_text(self):
@@ -71,7 +79,7 @@ class RecognitionProcessingImage:
         img_np = np.array(processed_img)
 
         # Initialize EasyOCR
-        reader = easyocr.Reader(['ru'], gpu=True)
+        reader = easyocr.Reader(self.values_setting["DEFAULT_LANG"], gpu=True)
 
         # Recognize text, get results
         results = reader.readtext(img_np)
@@ -97,7 +105,8 @@ class RecognitionProcessingImage:
         """Main function to recognize"""
         res_text = self.get_text()
         try:
-            self.convert_to_TXT(res_text)
+            if self.values_setting["SAVE_TXT_FILE"]:
+                self.convert_to_TXT(res_text)
         except FileNotFoundError:
             self.errors.append((get_current_time(), "The directory not found!"))  # Directory not found
         except PermissionError:
