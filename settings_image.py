@@ -71,11 +71,19 @@ class SettingsImage(QWidget, Ui_SettingsImage):
 
         self.update_image()
 
+    def error_input_langs(self):
+        self.error_input.setText("You've entered the languages wrong.")
+
     def accept(self):
         """Saving the settings"""
         data = get_data_settings()
+        set_langs = self.input_langs.text().split()
+        if all(lang in data["image_settings"]["ALL_LANGS"].values() for lang in set_langs):
+            data["image_settings"]["DEFAULT_LANG"] = set_langs
+        else:
+            self.error_input_langs()
+            return
         data["image_settings"]["SAVE_TXT_FILE"] = self.check_to_txt.isChecked()
-        data["image_settings"]["DEFAULT_LANG"] = self.input_langs.text().split()  # !!!!!!!!!!!beta если в поле значения неправильно ввели
         data["image_settings"]["CONTRAST_RATIO"] = self.contract_SpinBox.value()
         data["image_settings"]["SIZE_TRANSFORM_IMG"] = self.size_SpinBox.value()
         data["image_settings"]["CONVERT_IMG"] = "bitmap" if self.check_bitmap.isChecked() else\
