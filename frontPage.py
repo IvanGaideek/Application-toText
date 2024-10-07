@@ -6,6 +6,7 @@ from PySide6 import QtCore
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from auxiliary_funcs import check_file_extension, wrap_text, read_file, clear_result
+from settings_sound import SettingsSound
 from threads import RecognitionThreadImage, RecognitionThreadSound, RecognitionThreadPDF
 from settings_image import SettingsImage
 from ui_index import Ui_MainWindow
@@ -214,7 +215,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if text == "Settings from image":
             self.obj = SettingsImage()
         elif text == "Settings from sound":
-            pass
+            self.obj = SettingsSound()
         elif text == "Settings from PDF":
             pass
         if self.obj is not None:

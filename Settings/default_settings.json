@@ -16,5 +16,30 @@
       "CONVERT_IMG": "bitmap",
       "CONTRAST_RATIO": 1.75,
       "INVERT_IMG": true
+  },
+  "sound_settings": {
+    "ALL_LANGS": {
+      "All": null,
+      "Afrikaans": "af", "Arabic": "ar", "Armenian": "hy", "Azerbaijani": "az", "Belarusian": "be", "Bosnian": "bs", "Bulgarian": "bg", "Catalan": "ca", "Chinese": "zh", "Croatian": "hr", "Czech": "cs", "Danish": "da", "Dutch": "nl", "English": "en", "Estonian": "et", "Finnish": "fi", "French": "fr", "Galician": "gl", "German": "de",
+      "Greek": "el", "Hebrew": "he", "Hindi": "hi", "Hungarian": "hu", "Icelandic": "is", "Indonesian": "id", "Italian": "it", "Japanese": "ja", "Kannada": "kn", "Kazakh": "kk", "Korean": "ko", "Latvian": "lv", "Lithuanian": "lt", "Macedonian": "mk", "Malay": "ms", "Marathi": "mr", "Maori": "mi", "Nepali": "ne", "Norwegian": "no", "Persian": "fa", "Polish": "pl", "Portuguese": "pt", "Romanian": "ro", "Russian": "ru",
+      "Serbian": "sr",
+      "Slovak": "sk",
+      "Slovenian": "sl",
+      "Spanish": "es",
+      "Swahili": "sw",
+      "Swedish": "sv",
+      "Tagalog": "tl",
+      "Tamil": "ta",
+      "Thai": "th",
+      "Turkish": "tr",
+      "Ukrainian": "uk",
+      "Urdu": "ur",
+      "Vietnamese": "vi",
+      "Welsh": "cy"
+    },
+    "DEFAULT_LANG": "All",
+    "ALL_MODELS": {"tiny: 1 GB VRAM, 10x speed": "tiny", "base: 1 GB VRAM, 7x speed": "base", "small: 2 GB VRAM, 4x speed": "small", "medium: 5 GB VRAM, 2x speed": "medium", "large: 10 GB VRAM, 1x speed": "large", "turbo: 6 GB VRAM, 8x speed": "turbo"},
+    "DEFAULT_MODEL": "base: 1 GB VRAM, 7x speed",
+    "SAVE_TXT_FILE": false
   }
 }

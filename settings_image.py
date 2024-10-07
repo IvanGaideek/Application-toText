@@ -46,13 +46,12 @@ class SettingsImage(QWidget, Ui_SettingsImage):
         set_data = data["image_settings"]
         checked_txt = set_data["SAVE_TXT_FILE"]
         self.check_to_txt.setChecked(checked_txt)
-        if checked_txt:
-            self.lineEdit_folder_path.setText(data["save_path"]["for_image"])
-        else:
-            self.lineEdit_folder_path.setText("")
+        self.lineEdit_folder_path.setText(data["save_path"]["for_image"])
+
         # create data in the ComboBox
         self.langs_dict = set_data["ALL_LANGS"]
         langs = self.langs_dict.keys()
+        self.comboBox_langs.clear()
         self.comboBox_langs.addItems(langs)
 
         self.input_langs.setText(" ".join(set_data["DEFAULT_LANG"]))
@@ -75,7 +74,6 @@ class SettingsImage(QWidget, Ui_SettingsImage):
     def accept(self):
         """Saving the settings"""
         data = get_data_settings()
-        self.close()
         data["image_settings"]["SAVE_TXT_FILE"] = self.check_to_txt.isChecked()
         data["image_settings"]["DEFAULT_LANG"] = self.input_langs.text().split()  # !!!!!!!!!!!beta если в поле значения неправильно ввели
         data["image_settings"]["CONTRAST_RATIO"] = self.contract_SpinBox.value()
@@ -83,7 +81,9 @@ class SettingsImage(QWidget, Ui_SettingsImage):
         data["image_settings"]["CONVERT_IMG"] = "bitmap" if self.check_bitmap.isChecked() else\
             "gray" if self.check_gray.isChecked() else None
         data["image_settings"]["INVERT_IMG"] = self.check_invert.isChecked()
+        data["save_path"]["for_image"] = self.lineEdit_folder_path.text()
         change_in_settings(data)
+        self.close()
 
     def reject(self):
         """Button processing Cancel"""

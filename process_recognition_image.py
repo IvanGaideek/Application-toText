@@ -1,7 +1,6 @@
-import json
-
 from PIL import Image, ImageEnhance, ImageDraw
 from auxiliary_funcs import get_current_time
+from operation_with_settings import get_data_settings
 import numpy as np
 import easyocr
 
@@ -15,8 +14,7 @@ class RecognitionProcessingImage:
         self.before_image = None  # To draw recognized text
         self.__load_image()
         # Open and read the JSON (settings) file
-        with open('Settings/cur_settings.json', 'r') as file:
-            data = json.load(file)
+        data = get_data_settings()
         self.values_setting = data["image_settings"]
         save_path_dir = data["save_path"]["for_image"]
         self.save_path = save_path_dir + self.image_path.split("/")[-1].split(".")[0]
