@@ -6,13 +6,15 @@ from pdf2docx import Converter
 from auxiliary_funcs import get_current_time
 import csv
 
+from operation_with_settings import get_data_settings
+
 
 class RecognitionProcessingPDF:
     def __init__(self, pdf_path):
         self.pdf_path = pdf_path
         # Open and read the JSON (settings) file
-        with open('Settings/cur_settings.json', 'r') as file:
-            data = json.load(file)
+        data = get_data_settings()
+        self.values_setting = data["pdf_settings"]
         save_path = data["save_path"]["for_pdf"]
         self.create_save_directories(save_path)
         self.errors = []  # List of errors (time, str)
@@ -22,7 +24,13 @@ class RecognitionProcessingPDF:
         self.path_save_one = directory + self.name_save_one_pdf
         if not os.path.isdir(self.path_save_one):
             os.makedirs(self.path_save_one)
-        dir_list = ["tables", "images"]  # the directories of files of one PDF
+
+        dir_list = []  # the directories of files of one PDF
+        if self.values_setting["SAVE_IMAGES"]:
+            dir_list.append("images")
+        if self.values_setting["SAVE_TABLES"]:
+            dir_list.append("tables")
+
         for dir in dir_list:
             if not os.path.isdir(self.path_save_one + "/" + dir):
                 os.makedirs(self.path_save_one + "/" + dir)
@@ -31,14 +39,18 @@ class RecognitionProcessingPDF:
     def recognize(self):
         """Determines by settings what needs to be extracted from the PDF file"""
         text = self.recognize_text()
-        self.error_correction(self.save_tables, "The problem with the encoding of the table",
-                              "The problem with the permission of the dir for table")
-        self.error_correction(self.convert_to_TXT, "The problem with the encoding of the text",
-                              "The problem with the permission of the dir for text")
-        self.error_correction(self.save_images, "The problem with the encoding of the image",
-                              "The problem with the permission of the dir for image")
-        self.error_correction(self.convert_to_WORD, "The problem with the encoding of the word",
-                              "The problem with the permission of the dir for word")
+        if self.values_setting["SAVE_TABLES"]:
+            self.error_correction(self.save_tables, "The problem with the encoding of the table",
+                                  "The problem with the permission of the dir for table")
+        if self.values_setting["SAVE_TXT_FILE"]:
+            self.error_correction(self.convert_to_TXT, "The problem with the encoding of the text",
+                                  "The problem with the permission of the dir for text")
+        if self.values_setting["SAVE_IMAGES"]:
+            self.error_correction(self.save_images, "The problem with the encoding of the image",
+                                  "The problem with the permission of the dir for image")
+        if self.values_setting["SAVE_WORD_FILE"]:
+            self.error_correction(self.convert_to_WORD, "The problem with the encoding of the word",
+                                  "The problem with the permission of the dir for word")
         return text, self.errors
 
     def error_correction(self, func, mes_unicode, mes_permission):

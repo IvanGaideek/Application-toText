@@ -41,5 +41,11 @@
     "ALL_MODELS": {"tiny: 1 GB VRAM, 10x speed": "tiny", "base: 1 GB VRAM, 7x speed": "base", "small: 2 GB VRAM, 4x speed": "small", "medium: 5 GB VRAM, 2x speed": "medium", "large: 10 GB VRAM, 1x speed": "large", "turbo: 6 GB VRAM, 8x speed": "turbo"},
     "DEFAULT_MODEL": "base: 1 GB VRAM, 7x speed",
     "SAVE_TXT_FILE": false
+  },
+  "pdf_settings": {
+    "SAVE_TABLES": false,
+    "SAVE_IMAGES": false,
+    "SAVE_WORD_FILE": false,
+    "SAVE_TXT_FILE": false
   }
 }
