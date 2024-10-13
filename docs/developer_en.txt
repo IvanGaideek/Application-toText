@@ -1,0 +1,4 @@
+  The software developer is Gaideek Ivan Mikhailovich.
+  He is engaged in industrial programming in python.
+  Says: "I wanted to assemble a complex automation routine in one place – this became my toText application!"
+My VK - id700432691

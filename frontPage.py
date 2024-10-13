@@ -2,7 +2,7 @@ import os
 
 from PIL.ImageQt import ImageQt
 from PIL import Image
-from PySide6 import QtCore
+from PySide6 import QtCore, QtGui
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from auxiliary_funcs import check_file_extension, wrap_text, read_file, clear_result
@@ -19,6 +19,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)  # downloads the ui file from the designer and sets it as the window
         self.setWindowTitle("toText")
+        self.setWindowIcon(QtGui.QIcon('Design/main_icon.svg'))
 
         # Buttons hide by default
         self.frame_2.setHidden(True)

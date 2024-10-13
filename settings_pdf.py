@@ -45,14 +45,13 @@ class SettingsPDF(QWidget, Ui_SettingsPDF):
 
     def accept(self):
         """Saving the settings"""
-        data = get_data_settings()
-        set_data = data["pdf_settings"]
-        set_data["SAVE_TXT_FILE"] = self.check_to_txt.isChecked()
-        set_data["SAVE_WORD_FILE"] = self.check_to_WORD.isChecked()
-        set_data["SAVE_IMAGES"] = self.check_to_images.isChecked()
-        set_data["SAVE_TABLES"] = self.check_to_tables.isChecked()
-        data["save_path"]["for_pdf"] = self.lineEdit_folder_path.text()
-        change_in_settings(data)
+        set_data = get_data_settings()
+        set_data["pdf_settings"]["SAVE_TXT_FILE"] = self.check_to_txt.isChecked()
+        set_data["pdf_settings"]["SAVE_WORD_FILE"] = self.check_to_WORD.isChecked()
+        set_data["pdf_settings"]["SAVE_IMAGES"] = self.check_to_images.isChecked()
+        set_data["pdf_settings"]["SAVE_TABLES"] = self.check_to_tables.isChecked()
+        set_data["save_path"]["for_pdf"] = self.lineEdit_folder_path.text()
+        change_in_settings(set_data)
         self.close()
 
     def reject(self):

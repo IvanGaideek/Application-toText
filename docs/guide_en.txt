@@ -1,0 +1,10 @@
+  The application performs 3 main tasks: recognizing text in an image, recognizing speech in audio files, and converting a PDF file to other formats. The "Information" menu provides background information with the ability to select a language (see below, after this block of text). And when you click on the "EXIT" button, the application and its processes are closed.
+  The application is not recommended for use on weak PCs. With a good video card, the application will perform recognition much faster (mainly related to speech recognition).
+  In all three tasks, you can choose either a file or a folder (in the "Choose" top menu). When you select a folder, the recognized information will be saved in a separate folder and conveniently structured. The recognized text is located above the recognition button, and when recognizing a folder, the information of each individual file is separated by a separator "---------- Separator-----------".
+  The settings are located in the upper right corner. Select the desired settings and click "edit". When you click "OK", the new settings are accepted.
+  In the lower right corner there is information about the last ten errors in the program after launching the application (the time of the error is indicated and what kind of error it is).
+  To the left of the errors is a field of information about recognition performance.
+
+  Notes: 1) If you run a certain voice recognition model for the first time, it will load first (which usually takes from 12 minutes)
+
+SINCERELY, Ivan Gaideek is a software developer.

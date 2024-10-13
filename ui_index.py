@@ -1981,6 +1981,6 @@ class Ui_MainWindow(object):
         ___qlistwidgetitem.setText(QCoreApplication.translate("MainWindow", u"Errors:", None));
         self.errors_log_listWidget.setSortingEnabled(__sortingEnabled)
 
-        self.top_menu.setTitle(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0440\u0430\u0442\u044c", None))
+        self.top_menu.setTitle(QCoreApplication.translate("MainWindow", u"Сhoose", None))
     # retranslateUi
 

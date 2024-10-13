@@ -1,0 +1,9 @@
+Libraries and frameworks were used:
+    - PySide6 == 6.7.2 – all the work of the application is done using it
+    - openai-whisper – for voice recognition
+    - Torch – a framework for creating neural networks
+    - Pillow and numpy were used for image processing
+    - easyocr – recognizes text in images
+    - PyMuPDF – for recognizing information from a PDF file
+    - pdf2docx – converts from PDF to .docx document
+The design is written in CSS.

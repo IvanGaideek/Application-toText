@@ -21,7 +21,7 @@ class RecognitionProcessingPDF:
 
     def create_save_directories(self, directory):
         self.name_save_one_pdf = self.pdf_path.split(".")[0].split("/")[-1]  # the directory of files of one PDF
-        self.path_save_one = directory + self.name_save_one_pdf
+        self.path_save_one = directory + "/" + self.name_save_one_pdf
         if not os.path.isdir(self.path_save_one):
             os.makedirs(self.path_save_one)
 
